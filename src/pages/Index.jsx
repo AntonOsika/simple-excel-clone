@@ -76,7 +76,7 @@ const Index = () => {
                 <Td key={colIndex}>
                   <Flex>
                     <Input value={cell} onChange={(e) => updateCell(rowIndex, colIndex, e.target.value)} placeholder={`${String.fromCharCode(65 + colIndex)}${rowIndex + 1}`} type="number" />
-                    <Button size="xs" onClick={() => setReference(rowIndex, colIndex)}>
+                    <Button size="xs" onClick={() => setReference(rowIndex, colIndex)} isDisabled={!isRefMode && selectedCell !== null && (selectedCell.row !== rowIndex || selectedCell.col !== colIndex)}>
                       Ref
                     </Button>
                   </Flex>
