@@ -2,8 +2,12 @@ import React, { useState } from "react";
 import { Box, Table, Thead, Tbody, Tr, Th, Td, IconButton, Input, Flex } from "@chakra-ui/react";
 import { FaPlus, FaTrash } from "react-icons/fa";
 
+import { Button } from "@chakra-ui/react";
+
 const Index = () => {
-  const [data, setData] = useState([[""]]); // Initial state with one cell
+  const [data, setData] = useState([[""]]);
+  const [selectedCell, setSelectedCell] = useState(null);
+  const [isRefMode, setIsRefMode] = useState(false);
 
   const addRow = () => {
     setData([...data, new Array(data[0].length).fill("")]);
@@ -24,6 +28,17 @@ const Index = () => {
       const newData = [...data];
       newData.splice(rowIndex, 1);
       setData(newData);
+    }
+  };
+
+  const setReference = (rowIndex, colIndex) => {
+    if (isRefMode && selectedCell) {
+      updateCell(selectedCell.row, selectedCell.col, `=${String.fromCharCode(65 + colIndex)}${rowIndex + 1}`);
+      setSelectedCell(null);
+      setIsRefMode(false);
+    } else {
+      setSelectedCell({ row: rowIndex, col: colIndex });
+      setIsRefMode(true);
     }
   };
 
@@ -59,7 +74,12 @@ const Index = () => {
             <Tr key={rowIndex}>
               {row.map((cell, colIndex) => (
                 <Td key={colIndex}>
-                  <Input value={cell} onChange={(e) => updateCell(rowIndex, colIndex, e.target.value)} placeholder={`${String.fromCharCode(65 + colIndex)}${rowIndex + 1}`} type="number" />
+                  <Flex>
+                    <Input value={cell} onChange={(e) => updateCell(rowIndex, colIndex, e.target.value)} placeholder={`${String.fromCharCode(65 + colIndex)}${rowIndex + 1}`} type="number" />
+                    <Button size="xs" onClick={() => setReference(rowIndex, colIndex)}>
+                      Ref
+                    </Button>
+                  </Flex>
                 </Td>
               ))}
               <Td>
